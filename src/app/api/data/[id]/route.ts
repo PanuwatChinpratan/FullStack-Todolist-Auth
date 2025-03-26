@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params
+type ContextType = {
+  params: {
+    id: string
+  }
+}
+
+export async function PUT(req: NextRequest, { params }: ContextType) {
+  const { id } = params
 
   try {
     const body = await req.json()
@@ -20,8 +26,8 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
   }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params
+export async function DELETE(req: NextRequest, { params }: ContextType) {
+  const { id } = params
 
   try {
     await prisma.dota2.delete({
