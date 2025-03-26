@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
+// Notice that the second argument expects `params` to be a Promise
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const { id } = context.params
+  // Await the params
+  const { id } = await params
 
   try {
     const body = await req.json()
@@ -25,9 +27,10 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const { id } = params
+  // Await the params here too
+  const { id } = await params
 
   try {
     await prisma.dota2.delete({ where: { id } })
