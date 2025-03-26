@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
-export const PUT = (async (req: NextRequest, context: { params: { id: string } }) => {
-  const id = context.params.id
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } }
+): Promise<NextResponse> {
+  const { id } = context.params
 
   try {
     const body = await req.json()
@@ -18,16 +21,16 @@ export const PUT = (async (req: NextRequest, context: { params: { id: string } }
     console.error('PUT Error:', error)
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
   }
-}) as any
+}
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   const { id } = params
 
   try {
-    await prisma.dota2.delete({
-      where: { id },
-    })
-
+    await prisma.dota2.delete({ where: { id } })
     return NextResponse.json({ message: 'Deleted successfully' })
   } catch (error) {
     console.error('DELETE Error:', error)
