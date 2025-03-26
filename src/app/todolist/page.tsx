@@ -41,7 +41,7 @@ const Page = () => {
       setInputValueDes('')
       fetchData() // ✅ โหลดข้อมูลใหม่
     } catch (error) {
-      console.error('Failed to add data')
+      console.error('Failed to add data', error)
     }
   }
 
@@ -50,7 +50,7 @@ const Page = () => {
       await fetch(`/api/data/${id}`, { method: 'DELETE' })
       fetchData()
     } catch (error) {
-      console.error('Failed to delete data')
+      console.error('Failed to delete data', error)
     }
   }
 
@@ -67,7 +67,7 @@ const Page = () => {
       setEditingId(null) // ✅ รีเซ็ตสถานะแก้ไข
       fetchData()
     } catch (error) {
-      console.error('Failed to add data', error)
+      console.error('Failed to update data', error)
     }
   }
   const toggleComplete = async (id: number, completed: boolean) => {
@@ -79,7 +79,7 @@ const Page = () => {
       })
       fetchData() // ✅ โหลดข้อมูลใหม่
     } catch (error) {
-      console.error('Failed to toggle completion status')
+      console.error('Failed to toggle completion status', error)
     }
   }
 
