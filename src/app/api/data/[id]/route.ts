@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
-export const PUT = (async (req: NextRequest, context: { params: { id: string } }) => {
+// PUT handler
+export const PUT = async (
+  req: NextRequest,
+  context: { params: { id: string } }
+): Promise<NextResponse> => {
   const id = context.params.id
 
   try {
@@ -14,16 +18,17 @@ export const PUT = (async (req: NextRequest, context: { params: { id: string } }
     })
 
     return NextResponse.json({ message: 'Updated successfully' })
-  } catch (error) {
+  } catch (err: unknown) {
+    console.error('PUT Error:', err)
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
   }
-}) as any
+}
 
-
+// DELETE handler
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse> {
   const { id } = params
 
   try {
@@ -32,8 +37,8 @@ export async function DELETE(
     })
 
     return NextResponse.json({ message: 'Deleted successfully' })
-  } catch (error) {
-    console.error('DELETE Error:', error)
+  } catch (err: unknown) {
+    console.error('DELETE Error:', err)
     return NextResponse.json({ error: 'Failed to delete data' }, { status: 500 })
   }
 }
