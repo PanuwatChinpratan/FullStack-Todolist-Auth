@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params
+export const PUT = (async (req: NextRequest, context: { params: { id: string } }) => {
+  const id = context.params.id
 
   try {
     const body = await req.json()
@@ -18,10 +15,10 @@ export async function PUT(
 
     return NextResponse.json({ message: 'Updated successfully' })
   } catch (error) {
-    console.error('PUT Error:', error)
-    return NextResponse.json({ error: 'Failed to update data' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 })
   }
-}
+}) as any
+
 
 export async function DELETE(
   req: NextRequest,
