@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const session = request.cookies.get('_Secure-authjs.session-token') || request.cookies.get('authjs.session-token')
+  const session = request.cookies.get('__Secure-authjs.session-token') || request.cookies.get('authjs.session-token')
 
   // If session cookie exists, allow to proceed
   if (session?.value) {
