@@ -67,7 +67,7 @@ const Page = () => {
       setEditingId(null) // ✅ รีเซ็ตสถานะแก้ไข
       fetchData()
     } catch (error) {
-      console.error('Failed to update data')
+      console.error('Failed to add data', error)
     }
   }
   const toggleComplete = async (id: number, completed: boolean) => {
