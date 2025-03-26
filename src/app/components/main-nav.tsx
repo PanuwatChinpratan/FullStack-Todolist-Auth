@@ -24,13 +24,13 @@ export function MainNav() {
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  "ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก"
+                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
                 </ListItem>
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  "ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก"
+                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
                 </ListItem>
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  "ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก"
+                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
                 </ListItem>
               </ul>
             </NavigationMenuContent>

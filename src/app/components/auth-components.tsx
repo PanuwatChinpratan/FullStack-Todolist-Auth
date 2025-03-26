@@ -1,7 +1,6 @@
 import { signIn, signOut } from "@/auth"
 import { Button } from "@/components/ui/button"
-import { redirect } from "next/dist/server/api-utils"
-import { FaGoogle } from "react-icons/fa"
+
 
 export function SignIn({
   provider,

@@ -11,7 +11,7 @@ type TodoType = {
   description?: string
   completed: boolean
 }
-const page = () => {
+const Page = () => {
   const [items, setItems] = useState<TodoType[]>([])
   const [inputValue, setInputValue] = useState('')
   const [inputValueDes, setInputValueDes] = useState('')
@@ -145,4 +145,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

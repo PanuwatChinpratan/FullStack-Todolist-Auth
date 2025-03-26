@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import CustomLink from './components/custom-link'
+
 
 export default async function Index() {
   const session = await auth()
