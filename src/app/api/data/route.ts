@@ -1,30 +1,42 @@
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/prisma"
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/prisma'
 
-// [GET] - ดึงข้อมูลทั้งหมด
-export async function GET() {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params
+
   try {
-    const alldata = await prisma.dota2.findMany()
-    return NextResponse.json(alldata)
+    const body = await req.json()
+    const { title, description, completed } = body
+
+    await prisma.dota2.update({
+      where: { id },
+      data: { title, description, completed },
+    })
+
+    return NextResponse.json({ message: 'Updated successfully' })
   } catch (error) {
-    console.error("GET Error:", error)
-    return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
+    console.error('PUT Error:', error)
+    return NextResponse.json({ error: 'Failed to update data' }, { status: 500 })
   }
 }
 
-// [POST] - สร้างรายการใหม่
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json()
-    const { title, description } = body
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params
 
-    const newPost = await prisma.dota2.create({
-      data: { title, description },
+  try {
+    await prisma.dota2.delete({
+      where: { id },
     })
 
-    return NextResponse.json(newPost)
+    return NextResponse.json({ message: 'Deleted successfully' })
   } catch (error) {
-    console.error("POST Error:", error)
-    return NextResponse.json({ error: "Failed to create data" }, { status: 500 })
+    console.error('DELETE Error:', error)
+    return NextResponse.json({ error: 'Failed to delete data' }, { status: 500 })
   }
 }
