@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
 
-// Notice that the second argument expects `params` to be a Promise
+// แก้ให้รับ params เป็น { id: string } ตรง ๆ 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ): Promise<NextResponse> {
-  // Await the params
-  const { id } = await params
+  const { id } = params
 
   try {
     const body = await req.json()
@@ -27,13 +26,14 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ): Promise<NextResponse> {
-  // Await the params here too
-  const { id } = await params
+  const { id } = params
 
   try {
-    await prisma.dota2.delete({ where: { id } })
+    await prisma.dota2.delete({
+      where: { id },
+    })
     return NextResponse.json({ message: 'Deleted successfully' })
   } catch (error) {
     console.error('DELETE Error:', error)
