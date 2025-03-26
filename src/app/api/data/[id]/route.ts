@@ -1,45 +1,36 @@
-import { prisma } from "@/prisma";
-import { NextResponse } from "next/server";
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  console.log("Deleting ID:", params.id);
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/prisma'
+
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params
 
   try {
-    const body = await req.json();
-    const { title, description ,completed } = body;
-    await prisma.dota2.update({
-      where: { id: params.id },
-      data: { title, description ,completed },
-    });
+    const body = await req.json()
+    const { title, description, completed } = body
 
-    return NextResponse.json({ message: "Deleted successfully" });
+    await prisma.dota2.update({
+      where: { id },
+      data: { title, description, completed },
+    })
+
+    return NextResponse.json({ message: 'Updated successfully' })
   } catch (error) {
-    console.error("DELETE Error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete data" },
-      { status: 500 }
-    );
+    console.error('PUT Error:', error)
+    return NextResponse.json({ error: 'Failed to update data' }, { status: 500 })
   }
 }
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  console.log("Deleting ID:", params.id);
+
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params
 
   try {
     await prisma.dota2.delete({
-      where: { id: params.id },
-    });
+      where: { id },
+    })
 
-    return NextResponse.json({ message: "Deleted successfully" });
+    return NextResponse.json({ message: 'Deleted successfully' })
   } catch (error) {
-    console.error("DELETE Error:", error);
-    return NextResponse.json(
-      { error: "Failed to delete data" },
-      { status: 500 }
-    );
+    console.error('DELETE Error:', error)
+    return NextResponse.json({ error: 'Failed to delete data' }, { status: 500 })
   }
 }
