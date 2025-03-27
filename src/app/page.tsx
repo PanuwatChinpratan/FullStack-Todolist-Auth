@@ -1,6 +1,5 @@
 import { auth } from '@/auth'
 
-
 export default async function Index() {
   const session = await auth()
 
@@ -11,9 +10,9 @@ export default async function Index() {
         <p>รายละเอียดเพิ่มเติม</p>
       </div>
       <div>Optional for WebAuthn support ถ้าเปิดใช้งานใน schema.prisma</div>
-      <div className="flex flex-col rounded-md bg-gray-100">
-        <div className="rounded-t-md bg-gray-200 p-4 font-bold">Session ของคุณ</div>
-        <pre className="whitespace-pre-wrap break-all px-4 py-6">{JSON.stringify(session, null, 2)}</pre>
+      <div className="flex flex-col rounded-md bg-gray-100 dark:bg-gray-800">
+        <div className="rounded-t-md bg-gray-200 dark:bg-gray-700 p-4 font-bold text-gray-900 dark:text-gray-100">Session ของคุณ</div>
+        <pre className="whitespace-pre-wrap break-all px-4 py-6 text-gray-800 dark:text-gray-100">{JSON.stringify(session, null, 2)}</pre>
       </div>
     </div>
   )
