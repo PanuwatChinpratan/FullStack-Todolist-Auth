@@ -7,7 +7,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import LoadingSkeleton from './LoadingSkeleton'
 import { toast } from 'sonner'
-import { z } from 'zod' // ✅ เพิ่ม zod
+import { z } from 'zod'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 type TodoType = {
   id: number
@@ -20,7 +21,6 @@ type Props = {
   userEmail: string | null
 }
 
-// ✅ schema สำหรับ validate
 const todoSchema = z.object({
   title: z
     .string()
@@ -29,11 +29,13 @@ const todoSchema = z.object({
   description: z.string().optional(),
 })
 
-
 export default function ClientTodoPage({ userEmail }: Props) {
   const [inputValue, setInputValue] = useState('')
   const [inputValueDes, setInputValueDes] = useState('')
   const [editingId, setEditingId] = useState<number | null>(null)
+
+  const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const {
     data: items = [],
@@ -86,13 +88,23 @@ export default function ClientTodoPage({ userEmail }: Props) {
     }
   }
 
-  const deleteData = async (id: number) => {
-    const res = await fetch(`/api/data/${id}`, { method: 'DELETE' })
-    if (res.ok) {
-      toast('ลบ todo แล้ว 🗑️')
-      refetch()
-    } else {
-      toast('ลบไม่สำเร็จ ❌')
+  const handleDelete = async () => {
+    if (selectedDeleteId === null) return
+
+    setDeletingId(selectedDeleteId)
+    try {
+      const res = await fetch(`/api/data/${selectedDeleteId}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast('ลบ todo แล้ว 🗑️')
+        refetch()
+      } else {
+        toast('ลบไม่สำเร็จ ❌')
+      }
+    } catch (error) {
+      toast('เกิดข้อผิดพลาดในการลบ ❌')
+    } finally {
+      setDeletingId(null)
+      setSelectedDeleteId(null)
     }
   }
 
@@ -152,19 +164,9 @@ export default function ClientTodoPage({ userEmail }: Props) {
       <h1 className="text-3xl text-center mb-4">Todo List</h1>
 
       <div className="flex gap-2 mb-4">
-        <Input
-          value={inputValue}
-          placeholder="Title"
-          onChange={e => setInputValue(e.target.value)}
-        />
-        <Input
-          value={inputValueDes}
-          placeholder="Description"
-          onChange={e => setInputValueDes(e.target.value)}
-        />
-        <Button onClick={editingId === null ? postData : updateData}>
-          {editingId === null ? 'Add' : 'Update'}
-        </Button>
+        <Input value={inputValue} placeholder="Title" onChange={e => setInputValue(e.target.value)} />
+        <Input value={inputValueDes} placeholder="Description" onChange={e => setInputValueDes(e.target.value)} />
+        <Button onClick={editingId === null ? postData : updateData}>{editingId === null ? 'Add' : 'Update'}</Button>
       </div>
 
       {isLoading ? (
@@ -173,9 +175,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
           <LoadingSkeleton />
         </>
       ) : items.length === 0 ? (
-        <p className="text-center text-muted-foreground">
-          ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀
-        </p>
+        <p className="text-center text-muted-foreground">ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀</p>
       ) : (
         <div className="h-[300px] sm:h-[400px] md:h-[500px] overflow-y-auto scrollbar-thin pr-2">
           {items.map(todo => (
@@ -186,15 +186,8 @@ export default function ClientTodoPage({ userEmail }: Props) {
                   <p className="text-sm">{todo.description}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    onClick={() => toggleComplete(todo.id, todo.completed)}
-                  >
-                    {todo.completed ? 'Undo' : 'Done'}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => deleteData(todo.id)}
-                  >
+                  <Button onClick={() => toggleComplete(todo.id, todo.completed)}>{todo.completed ? 'Undo' : 'Done'}</Button>
+                  <Button variant="destructive" onClick={() => setSelectedDeleteId(todo.id)}>
                     Delete
                   </Button>
                   <Button
@@ -212,6 +205,27 @@ export default function ClientTodoPage({ userEmail }: Props) {
           ))}
         </div>
       )}
+
+      {/* 🔐 AlertDialog สำหรับยืนยันการลบ */}
+      <AlertDialog
+        open={selectedDeleteId !== null}
+        onOpenChange={(open: any) => {
+          if (!open) setSelectedDeleteId(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>คุณแน่ใจนะว่าจะลบ?</AlertDialogTitle>
+            <AlertDialogDescription>ลบจริงโดยที่ลบออกจาก DB เลย!</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingId !== null}>ยกเลิก</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={deletingId !== null}>
+              {deletingId !== null ? 'กำลังลบ...' : 'ยืนยันการลบ'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
