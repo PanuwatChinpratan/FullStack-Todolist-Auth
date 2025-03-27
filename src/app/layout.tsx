@@ -4,6 +4,9 @@ import './globals.css'
 import Header from './components/header'
 import Footer from './components/footer'
 import { ThemeProvider } from './components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
+import ReactQueryProvider from './components/react-query-provider'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -27,13 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex h-full min-h-screen w-full flex-col justify-between">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <Header />
-            <main className="mx-auto w-full max-w-3xl flex-auto px-4 py-4 sm:px-6 md:py-6">{children}</main>
-            <Footer />
-          </ThemeProvider>
-        </div>
+        <ReactQueryProvider>
+          <div className="flex h-full min-h-screen w-full flex-col justify-between">
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              <Header />
+              <main className="mx-auto w-full max-w-3xl flex-auto px-4 py-4 sm:px-6 md:py-6">{children}</main>
+              <Toaster />
+              <Footer />
+            </ThemeProvider>
+          </div>
+        </ReactQueryProvider>
       </body>
     </html>
   )
