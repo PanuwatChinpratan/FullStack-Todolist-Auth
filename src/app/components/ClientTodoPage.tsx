@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import LoadingSkeleton from './LoadingSkeleton'
 import { toast } from 'sonner'
+import { z } from 'zod' // ✅ เพิ่ม zod
 
 type TodoType = {
   id: number
@@ -19,6 +20,16 @@ type Props = {
   userEmail: string | null
 }
 
+// ✅ schema สำหรับ validate
+const todoSchema = z.object({
+  title: z
+    .string()
+    .min(1, 'กรุณาใส่ Title ด้วยนะ')
+    .regex(/[ก-ฮa-zA-Z0-9]/, 'Title ต้องมีพยัญชนะหรืออักษรอย่างน้อย 1 ตัว'),
+  description: z.string().optional(),
+})
+
+
 export default function ClientTodoPage({ userEmail }: Props) {
   const [inputValue, setInputValue] = useState('')
   const [inputValueDes, setInputValueDes] = useState('')
@@ -27,7 +38,6 @@ export default function ClientTodoPage({ userEmail }: Props) {
   const {
     data: items = [],
     isLoading,
-
     refetch,
   } = useQuery<TodoType[]>({
     queryKey: ['todos', userEmail],
@@ -36,11 +46,21 @@ export default function ClientTodoPage({ userEmail }: Props) {
       const res = await fetch(`/api/data?email=${userEmail}`)
       return await res.json()
     },
-    enabled: !!userEmail, // ไม่เรียก query ถ้า userEmail ยังไม่มา
+    enabled: !!userEmail,
   })
 
   const postData = async () => {
-    if (!inputValue || !userEmail) return
+    const parsed = todoSchema.safeParse({
+      title: inputValue,
+      description: inputValueDes,
+    })
+
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0]?.message || 'กรอกข้อมูลให้ถูกต้องนะ')
+      return
+    }
+
+    if (!userEmail) return
     try {
       const res = await fetch('/api/data', {
         method: 'POST',
@@ -61,8 +81,8 @@ export default function ClientTodoPage({ userEmail }: Props) {
         toast('เพิ่มไม่สำเร็จ 😢')
       }
     } catch (error) {
-      console.log(error);     
-      toast('เกิดข้อผิดพลาดในการเพิ่ม todo ❌' )
+      console.log(error)
+      toast('เกิดข้อผิดพลาดในการเพิ่ม todo ❌')
     }
   }
 
@@ -78,6 +98,17 @@ export default function ClientTodoPage({ userEmail }: Props) {
 
   const updateData = async () => {
     if (editingId === null) return
+
+    const parsed = todoSchema.safeParse({
+      title: inputValue,
+      description: inputValueDes,
+    })
+
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0]?.message || 'กรอกข้อมูลให้ถูกต้องนะ')
+      return
+    }
+
     try {
       const res = await fetch(`/api/data/${editingId}`, {
         method: 'PUT',
@@ -98,7 +129,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
         toast('อัปเดตไม่สำเร็จ 😓')
       }
     } catch (error) {
-      console.log(error);    
+      console.log(error)
       toast('เกิดข้อผิดพลาดในการอัปเดต ❌')
     }
   }
@@ -121,51 +152,66 @@ export default function ClientTodoPage({ userEmail }: Props) {
       <h1 className="text-3xl text-center mb-4">Todo List</h1>
 
       <div className="flex gap-2 mb-4">
-        <Input value={inputValue} placeholder="Title" onChange={e => setInputValue(e.target.value)} />
-        <Input value={inputValueDes} placeholder="Description" onChange={e => setInputValueDes(e.target.value)} />
-        <Button onClick={editingId === null ? postData : updateData}>{editingId === null ? 'Add' : 'Update'}</Button>
+        <Input
+          value={inputValue}
+          placeholder="Title"
+          onChange={e => setInputValue(e.target.value)}
+        />
+        <Input
+          value={inputValueDes}
+          placeholder="Description"
+          onChange={e => setInputValueDes(e.target.value)}
+        />
+        <Button onClick={editingId === null ? postData : updateData}>
+          {editingId === null ? 'Add' : 'Update'}
+        </Button>
       </div>
 
       {isLoading ? (
-  <>
-    <p className="text-center">กำลังโหลดข้อมูล...</p>
-    <LoadingSkeleton />
-  </>
-) : items.length === 0 ? (
-  <p className="text-center text-muted-foreground">ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀</p>
-) : (
-  <div className="h-[300px] sm:h-[400px] md:h-[500px] overflow-y-auto scrollbar-thin pr-2">
-    {items.map(todo => (
-      <Card key={todo.id} className="mb-2">
-        <CardContent className="p-4 flex justify-between items-center">
-          <div>
-            <p className="font-bold">{todo.title}</p>
-            <p className="text-sm">{todo.description}</p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => toggleComplete(todo.id, todo.completed)}>
-              {todo.completed ? 'Undo' : 'Done'}
-            </Button>
-            <Button variant="destructive" onClick={() => deleteData(todo.id)}>
-              Delete
-            </Button>
-            <Button
-              onClick={() => {
-                setEditingId(todo.id)
-                setInputValue(todo.title)
-                setInputValueDes(todo.description ?? '')
-              }}
-            >
-              Edit
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    ))}
-  </div>
-)}
-
-      
+        <>
+          <p className="text-center">กำลังโหลดข้อมูล...</p>
+          <LoadingSkeleton />
+        </>
+      ) : items.length === 0 ? (
+        <p className="text-center text-muted-foreground">
+          ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀
+        </p>
+      ) : (
+        <div className="h-[300px] sm:h-[400px] md:h-[500px] overflow-y-auto scrollbar-thin pr-2">
+          {items.map(todo => (
+            <Card key={todo.id} className="mb-2">
+              <CardContent className="p-4 flex justify-between items-center">
+                <div>
+                  <p className="font-bold">{todo.title}</p>
+                  <p className="text-sm">{todo.description}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => toggleComplete(todo.id, todo.completed)}
+                  >
+                    {todo.completed ? 'Undo' : 'Done'}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => deleteData(todo.id)}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setEditingId(todo.id)
+                      setInputValue(todo.title)
+                      setInputValueDes(todo.description ?? '')
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
