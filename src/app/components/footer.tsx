@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="mx-0 my-4 w-full px-4 text-sm sm:mx-auto sm:my-12 sm:max-w-3xl sm:px-6">
       <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-300 py-6 sm:flex-row">
         {/* Left Section - Copyright */}
-        <p className="text-gray-900 dark:text-gray-100 justify-center">&copy; {new Date().getFullYear()} MILO. All rights reserved.</p>
+        <p className="text-gray-900 dark:text-gray-100">&copy; {new Date().getFullYear()} MILO. All rights reserved.</p>
 
         {/* Center Section - Navigation Links */}
         <nav className="hidden gap-4 text-gray-600 ">
