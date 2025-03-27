@@ -214,14 +214,16 @@ export default function ClientTodoPage({ userEmail }: Props) {
           if (!open) setSelectedDeleteId(null)
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-[var(--background)]">
           <AlertDialogHeader>
             <AlertDialogTitle>คุณแน่ใจนะว่าจะลบ?</AlertDialogTitle>
-            <AlertDialogDescription>ลบจริงโดยที่ลบออกจาก DB เลย!</AlertDialogDescription>
+            <AlertDialogDescription className="text-gray-900 dark:text-gray-100">ลบจริงโดยที่ลบออกจาก DB เลย!</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deletingId !== null}>ยกเลิก</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={deletingId !== null}>
+            <AlertDialogCancel className="cursor-pointer" disabled={deletingId !== null}>
+              ยกเลิก
+            </AlertDialogCancel>
+            <AlertDialogAction className="cursor-pointer" onClick={handleDelete} disabled={deletingId !== null}>
               {deletingId !== null ? 'กำลังลบ...' : 'ยืนยันการลบ'}
             </AlertDialogAction>
           </AlertDialogFooter>
