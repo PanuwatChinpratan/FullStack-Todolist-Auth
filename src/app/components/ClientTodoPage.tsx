@@ -101,6 +101,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
         toast('ลบไม่สำเร็จ ❌')
       }
     } catch (error) {
+      console.log(error)
       toast('เกิดข้อผิดพลาดในการลบ ❌')
     } finally {
       setDeletingId(null)
@@ -209,7 +210,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
       {/* 🔐 AlertDialog สำหรับยืนยันการลบ */}
       <AlertDialog
         open={selectedDeleteId !== null}
-        onOpenChange={(open: any) => {
+        onOpenChange={(open: boolean) => {
           if (!open) setSelectedDeleteId(null)
         }}
       >
