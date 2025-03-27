@@ -10,7 +10,7 @@ export default async function UserButton() {
   if (!session?.user) return <SignIn />
   return (
     <div className="flex items-center gap-2 ">
-      <span className="hidden text-sm text-muted-foreground sm:inline-flex">{session.user.email}</span>
+      <span className="hidden text-sm  sm:inline-flex text-gray-900 dark:text-gray-100">{session.user.email}</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:ring-2 hover:ring-ring hover:ring-offset-2 transition">
@@ -22,7 +22,7 @@ export default async function UserButton() {
         <DropdownMenuContent className="w-64 rounded-xl shadow-xl border border-border p-4" align="end" forceMount>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-semibold text-foreground">{session.user.name}</p>
-            <p className="text-xs text-muted-foreground">{session.user.email}</p>
+            <p className="text-xs text-gray-900 dark:text-gray-100">{session.user.email}</p>
           </div>
           <DropdownMenuSeparator className="my-3" />
           <DropdownMenuItem className="p-0">

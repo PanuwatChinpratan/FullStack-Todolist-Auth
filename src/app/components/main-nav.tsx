@@ -37,7 +37,7 @@ export function MainNav() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink href="/todolist" className={navigationMenuTriggerStyle()}>
-              Client Side
+              <span>TODO LIST</span>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
