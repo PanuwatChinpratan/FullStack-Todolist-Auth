@@ -20,7 +20,29 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'MiloList — Conquer Chaos, One Task at a Time',
   description: 'A quirky to-do app built by Milo, because even chaos needs structure 🧠⚡️',
+  openGraph: {
+    title: 'MiloList — Conquer Chaos, One Task at a Time',
+    description: 'A quirky to-do app built by Milo, because even chaos needs structure 🧠⚡️',
+    url: 'https://full-stack-todolist-beta.vercel.app',
+    siteName: 'MiloList',
+    images: [
+      {
+        url: 'https://full-stack-todolist-beta.vercel.app/todomiloimg.png', 
+        width: 1200,
+        height: 630,
+        alt: 'MiloList Open Graph Image',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MiloList — Conquer Chaos, One Task at a Time',
+    description: 'A quirky to-do app built by Milo, because even chaos needs structure 🧠⚡️',
+    images: ['https://full-stack-todolist-beta.vercel.app/todomiloimg.png'],
+  },
 }
+
 
 export default function RootLayout({
   children,
