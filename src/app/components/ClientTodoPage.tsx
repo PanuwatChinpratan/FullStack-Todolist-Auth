@@ -60,8 +60,9 @@ export default function ClientTodoPage({ userEmail }: Props) {
       } else {
         toast('เพิ่มไม่สำเร็จ 😢')
       }
-    } catch (_error) {
-      toast('เกิดข้อผิดพลาดในการเพิ่ม todo ❌')
+    } catch (error) {
+      console.log(error);     
+      toast('เกิดข้อผิดพลาดในการเพิ่ม todo ❌' )
     }
   }
 
@@ -96,7 +97,8 @@ export default function ClientTodoPage({ userEmail }: Props) {
       } else {
         toast('อัปเดตไม่สำเร็จ 😓')
       }
-    } catch (_error) {
+    } catch (error) {
+      console.log(error);    
       toast('เกิดข้อผิดพลาดในการอัปเดต ❌')
     }
   }
