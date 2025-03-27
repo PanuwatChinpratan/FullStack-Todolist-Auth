@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import LoadingSkeleton from './LoadingSkeleton'
 
 type TodoType = {
   id: number
@@ -106,7 +107,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
       </div>
 
       {items.length === 0 ? (
-        <p className="text-center">No data found</p>
+       <LoadingSkeleton />
       ) : (
         items.map(todo => (
           <Card key={todo.id} className="mb-2">

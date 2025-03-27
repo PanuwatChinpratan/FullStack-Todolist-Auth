@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 
 const Page = () => {
   return (
-    <main className="min-h-screen bg-white py-10 px-6 md:px-16 lg:px-32">
-      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">About Me</h1>
+    <main className="min-h-screen bg-gray-900 py-10 px-6 md:px-16 lg:px-32">
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">About Me</h1>
 
       <Card className="max-w-4xl mx-auto shadow-xl rounded-2xl">
         <CardContent className="p-8">
@@ -18,12 +18,11 @@ const Page = () => {
             </Avatar>
 
             <div className="text-center md:text-left">
-              <h2 className="text-2xl font-semibold text-gray-800">Panuwat Chinpratan</h2>
-              <p className="text-gray-600 mb-2">@madeverypersecond</p>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Panuwat Chinpratan</h2>
+              <p className="text-gray-900 dark:text-gray-100 mb-2">@madeverypersecond</p>
               <Badge variant="outline">Full Stack Developer</Badge>
-              <p className="mt-4 text-gray-700 leading-relaxed max-w-md">
-                Hey, I’m Milo 👋 I love creating web apps with modern stacks like Next.js, TypeScript, and Tailwind. 
-                Currently exploring cool tools like Shadcn, Prisma, and tRPC. Check out my GitHub or say hi on Facebook!
+              <p className="mt-4 text-gray-900 dark:text-gray-100 leading-relaxed max-w-md">
+                Hey, I’m Milo 👋!
               </p>
               <div className="flex gap-4 mt-4 justify-center md:justify-start">
                 <a href="https://portfolio-milo-final.vercel.app" target="_blank" className="text-blue-500 underline text-sm">
