@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 
 const Page = () => {
   return (
@@ -13,17 +13,15 @@ const Page = () => {
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <Avatar className="w-32 h-32 ring-4 ring-green-400 shadow">
-              <AvatarImage src="/your-profile.jpg" alt="Profile" />
+              <AvatarImage src="milo_profile.jpg" alt="Profile" className="w-32 h-32 object-cover" />
               <AvatarFallback>M</AvatarFallback>
             </Avatar>
 
             <div className="text-center md:text-left">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Panuwat Chinpratan</h2>
               <p className="text-gray-900 dark:text-gray-100 mb-2">@madeverypersecond</p>
-              <Badge variant="outline">Full Stack Developer</Badge>
-              <p className="mt-4 text-gray-900 dark:text-gray-100 leading-relaxed max-w-md">
-                Hey, I’m Milo 👋!
-              </p>
+              <Badge variant="outline">ทำไปเรื่อย Stack Developer</Badge>
+              <p className="mt-4 text-gray-900 dark:text-gray-100 leading-relaxed max-w-md">Hey, I’m Milo 👋!</p>
               <div className="flex gap-4 mt-4 justify-center md:justify-start">
                 <a href="https://portfolio-milo-final.vercel.app" target="_blank" className="text-blue-500 underline text-sm">
                   🌐 Portfolio
@@ -40,7 +38,7 @@ const Page = () => {
         </CardContent>
       </Card>
     </main>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page
