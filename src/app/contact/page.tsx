@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 const Page = () => {
   return (
-    <main className="min-h-screen bg-gray-900  py-12 px-4 sm:px-8 md:px-24">
+    <main className="min-h-screen bg-[var(--background)] py-12 px-4 sm:px-8 md:px-24">
       <h1 className="text-4xl font-bold text-center mb-10 text-gray-900 dark:text-gray-100">Contact Me</h1>
       <p className="text-center text-gray-900 dark:text-gray-100 my-4">หน้านี้ยังไม่ได้ทำไว้ให้ใช้จริงนะครับ</p>
       <Card className="max-w-3xl mx-auto shadow-md rounded-2xl">

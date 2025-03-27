@@ -117,7 +117,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6">
+    <div className="max-w-lg mx-auto p-6 ">
       <h1 className="text-3xl text-center mb-4">Todo List</h1>
 
       <div className="flex gap-2 mb-4">
@@ -127,39 +127,45 @@ export default function ClientTodoPage({ userEmail }: Props) {
       </div>
 
       {isLoading ? (
-        <>
-          <p className="text-center">กำลังโหลดข้อมูล...</p>
-          <LoadingSkeleton />
-        </>
-      ) : items.length === 0 ? (
-        <p className="text-center text-muted-foreground">ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀</p>
-      ) : (
-        items.map(todo => (
-          <Card key={todo.id} className="mb-2">
-            <CardContent className="p-4 flex justify-between items-center">
-              <div>
-                <p className="font-bold">{todo.title}</p>
-                <p className="text-sm">{todo.description}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={() => toggleComplete(todo.id, todo.completed)}>{todo.completed ? 'Undo' : 'Done'}</Button>
-                <Button variant="destructive" onClick={() => deleteData(todo.id)}>
-                  Delete
-                </Button>
-                <Button
-                  onClick={() => {
-                    setEditingId(todo.id)
-                    setInputValue(todo.title)
-                    setInputValueDes(todo.description ?? '')
-                  }}
-                >
-                  Edit
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))
-      )}
+  <>
+    <p className="text-center">กำลังโหลดข้อมูล...</p>
+    <LoadingSkeleton />
+  </>
+) : items.length === 0 ? (
+  <p className="text-center text-muted-foreground">ยังไม่มี todo ลองเพิ่มสักรายการเลย 🚀</p>
+) : (
+  <div className="h-[300px] sm:h-[400px] md:h-[500px] overflow-y-auto scrollbar-thin pr-2">
+    {items.map(todo => (
+      <Card key={todo.id} className="mb-2">
+        <CardContent className="p-4 flex justify-between items-center">
+          <div>
+            <p className="font-bold">{todo.title}</p>
+            <p className="text-sm">{todo.description}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={() => toggleComplete(todo.id, todo.completed)}>
+              {todo.completed ? 'Undo' : 'Done'}
+            </Button>
+            <Button variant="destructive" onClick={() => deleteData(todo.id)}>
+              Delete
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingId(todo.id)
+                setInputValue(todo.title)
+                setInputValueDes(todo.description ?? '')
+              }}
+            >
+              Edit
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+)}
+
+      
     </div>
   )
 }

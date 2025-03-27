@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Page = () => {
   return (
-    <main className="min-h-screen bg-gray-900 py-10 px-6 md:px-16 lg:px-32">
+    <main className="min-h-screen bg-[var(--background)] py-10 px-6 md:px-16 lg:px-32">
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">About Me</h1>
 
       <Card className="max-w-4xl mx-auto shadow-xl rounded-2xl">
