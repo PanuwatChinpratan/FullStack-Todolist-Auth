@@ -1,10 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## การเริ่มต้นใช้งาน
 
-## Getting Started
+### 1. ตั้งค่าตัวแปรสภาพแวดล้อม (Environment Variables)
 
-### 1. Setup environment variables
-
-Create a `.env.local` file in the root of the project with the following content:
+สร้างไฟล์ชื่อ `.env.local` ไว้ที่ root ของโปรเจกต์ ระดับเดียวกับ `package.json`
 
 ```env
 AUTH_SECRET=
@@ -16,21 +14,34 @@ AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 ```
 
-> ℹ️ Make sure to fill in the correct values for each field above.  
+> ℹ️ อย่าลืมใส่ค่าของตัวแปร `.env` ให้ครบถ้วน
 
-### 2. Run the development server
+### 2. รันเซิร์ฟเวอร์สำหรับพัฒนา
 
 ```bash
 npm run dev
-# or
+# หรือ
 yarn dev
-# or
+# หรือ
 pnpm dev
-# or
+# หรือ
 bun dev
 ```
 
+เปิด [http://localhost:3000](http://localhost:3000) ด้วยเบราว์เซอร์เพื่อดูผลลัพธ์
 
-## Deploy on Vercel
+### 3. คำสั่ง build (Production)
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ใน `package.json` ให้เพิ่มหรือแก้ไข script สำหรับ build ดังนี้:
+
+```json
+"scripts": {
+  "build": "prisma generate && next build"
+}
+```
+
+คำสั่งนี้จะรัน `prisma generate` ก่อน `next build` เพื่อให้แน่ใจว่า Prisma Client ถูก generate ครบก่อนทำการ build โปรเจกต์
+
+## Deploy บน Vercel
+
+ศึกษารายละเอียดเพิ่มเติมได้ที่ [เอกสารการ Deploy ของ Next.js](https://nextjs.org/docs/app/building-your-application/deploying)
