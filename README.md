@@ -16,7 +16,16 @@ AUTH_GOOGLE_SECRET=
 
 > ℹ️ อย่าลืมใส่ค่าของตัวแปร `.env` ให้ครบถ้วน
 
-### 2. รันเซิร์ฟเวอร์สำหรับพัฒนา
+### 2. รันคำสั่ง Prisma (สำคัญ อย่าลืมก่อนเริ่ม dev)
+
+ก่อนจะเริ่มพัฒนา ให้รันคำสั่งเหล่านี้เพื่อเตรียมฐานข้อมูลและ Prisma Client:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 3. รันเซิร์ฟเวอร์สำหรับพัฒนา
 
 ```bash
 npm run dev
@@ -30,9 +39,9 @@ bun dev
 
 เปิด [http://localhost:3000](http://localhost:3000) ด้วยเบราว์เซอร์เพื่อดูผลลัพธ์
 
-### 3. คำสั่ง build (Production)
+### 4. คำสั่ง build (Production)
 
-ใน `package.json` ให้เพิ่มหรือแก้ไข script สำหรับ build ดังนี้:
+ใน `package.json` ให้เพิ่มหรือแก้ไข script สำหรับ build ดังนี้: *(ใส่ไว้ให้แล้ว เขียนไว้กันลืม)*
 
 ```json
 "scripts": {
@@ -40,7 +49,7 @@ bun dev
 }
 ```
 
-คำสั่งนี้จะรัน `prisma generate` ก่อน `next build` เพื่อให้แน่ใจว่า Prisma Client ถูก generate ครบก่อนทำการ build โปรเจกต์
+คำสั่งนี้จะรัน `prisma generate` ก่อน `next build` เพื่อให้แน่ใจว่า Prisma Client ถูก generate ครบก่อน build
 
 ## Deploy บน Vercel
 
