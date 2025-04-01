@@ -3,9 +3,11 @@
 ### 1. ตั้งค่าตัวแปรสภาพแวดล้อม (Environment Variables)
 
 สร้างไฟล์ชื่อ `.env` `.env.local` ไว้ที่ root ของโปรเจกต์ ระดับเดียวกับ `package.json`
+`.env`
 ```env
 DATABASE_URL=
 ```
+`.env.local`
 ```env.local
 AUTH_SECRET=
 
