@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
-
+import { encrypt } from '@/lib/crypto'
 // Notice that the second argument expects `params` to be a Promise
 export async function PUT(
   req: NextRequest,
@@ -15,7 +15,11 @@ export async function PUT(
 
     await prisma.dota2.update({
       where: { id },
-      data: { title, description, completed },
+      data: {
+        title: encrypt(title),
+        description: description ? encrypt(description) : '',
+        completed, 
+      }
     })
 
     return NextResponse.json({ message: 'Updated successfully' })
