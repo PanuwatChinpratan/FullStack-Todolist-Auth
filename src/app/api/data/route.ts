@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
-import { encrypt } from '@/lib/crypto'
-import { decrypt } from '@/lib/crypto'
+
 // [GET] - ดึงข้อมูลทั้งหมด
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -12,14 +11,8 @@ export async function GET(req: NextRequest) {
       where: { userEmail: email || undefined }, // ✅ ถ้าไม่มี email จะไม่ filter
       orderBy: { createdAt: 'desc' },
     })
-    // ✅ ถอดรหัสทุก item ก่อนส่งกลับ
-    const decrypted = result.map(item => ({
-      ...item,
-      title: decrypt(item.title),
-      description: item.description ? decrypt(item.description) : '',
-    }))
 
-    return NextResponse.json(decrypted)
+    return NextResponse.json(result)
   } catch (error) {
     console.error('GET Error:', error)
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 })
@@ -34,8 +27,8 @@ export async function POST(req: NextRequest) {
 
     const newPost = await prisma.dota2.create({
       data: {
-        title: encrypt(title),
-        description: description ? encrypt(description) : '',
+        title,
+        description: description ? description : '',
         userEmail,
       },
     })
