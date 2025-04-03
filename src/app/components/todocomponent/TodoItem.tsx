@@ -18,8 +18,8 @@ export default function TodoItem({ todo, onEdit, onDelete, onToggle }: Props) {
     <Card className="mb-2">
       <CardContent className="p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
-          <p className="font-bold break-words">{todo.title}</p>
-          <p className="text-sm break-words">{todo.description}</p>
+          <p className="font-bold break-all">{todo.title}</p>
+          <p className="text-sm break-all">{todo.description}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button onClick={() => onToggle(todo.id, todo.completed)}>{todo.completed ? 'Undo' : 'Done'}</Button>
