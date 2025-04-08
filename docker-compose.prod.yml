@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   web:
+    container_name: todolist-prod  
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,4 +11,3 @@ services:
     env_file:
       - .env.production
     restart: always
-
