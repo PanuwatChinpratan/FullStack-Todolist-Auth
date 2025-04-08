@@ -10,7 +10,7 @@ export function SignIn({ provider, ...props }: { provider?: string } & React.Com
         await signIn(provider)
       }}
     >
-      <Button {...props}>Sign In</Button>
+      <Button {...props} className='cursor-pointer'>Sign In</Button>
     </form>
   )
 }
