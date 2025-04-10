@@ -14,7 +14,7 @@ export async function GET() {
 
   try {
     const result = await prisma.dota2.findMany({
-      where: { userEmail: email || undefined }, 
+      where: { userEmail: email || undefined },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -33,8 +33,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
- 
-
   try {
     const body = await req.json()
     const { title, description, userEmail } = body
@@ -42,7 +40,7 @@ export async function POST(req: NextRequest) {
     const newPost = await prisma.dota2.create({
       data: {
         title,
-        description: description ? description : '',
+        description: description || '',
         userEmail,
       },
     })
