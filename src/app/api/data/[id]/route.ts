@@ -32,7 +32,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 // [DELETE] - ลบข้อมูล
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
+export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
   const session = await auth() // ✅ ตรวจ login
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
