@@ -3,13 +3,18 @@ import { prisma } from '@/prisma'
 import { auth } from '@/auth' // ✅ ดึง session
 
 // [PUT] - อัปเดตข้อมูล
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
-  const session = await auth() // ✅ ตรวจ login
+export async function PUT(req: NextRequest): Promise<NextResponse> {
+  const session = await auth()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { id } = await params
+  // ✅ ดึง id จาก URL เช่น /api/data/abc123
+  const id = req.nextUrl.pathname.split('/').pop()
+
+  if (!id) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
 
   try {
     const body = await req.json()
@@ -19,7 +24,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       where: { id },
       data: {
         title,
-        description: description ? description : '',
+        description: description || '',
         completed,
       },
     })
