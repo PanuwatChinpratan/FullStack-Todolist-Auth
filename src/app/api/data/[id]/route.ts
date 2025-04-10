@@ -32,13 +32,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 // [DELETE] - ลบข้อมูล
-export async function DELETE({ params }: { params: Promise<{ id: string }> }): Promise<NextResponse> {
-  const session = await auth() // ✅ ตรวจ login
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
+  const session = await auth()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { id } = await params
+  // ดึง id จาก URL เช่น /api/data/abc123
+  const id = req.nextUrl.pathname.split('/').pop()
+
+  if (!id) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+  }
 
   try {
     await prisma.dota2.delete({ where: { id } })
