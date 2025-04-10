@@ -3,7 +3,7 @@ import { prisma } from '@/prisma'
 import { auth } from '@/auth' // ✅ ดึง session
 
 // [GET] - ดึงข้อมูลทั้งหมด
-export async function GET(req: NextRequest) {
+export async function GET(_: NextRequest) {
   const session = await auth() // ✅ ตรวจ session
 
   if (!session) {
