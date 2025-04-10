@@ -1,4 +1,3 @@
-// components/todo/TodoList.tsx
 import TodoItem from './TodoItem'
 import LoadingSkeleton from '../LoadingSkeleton'
 
@@ -32,13 +31,7 @@ export default function TodoList({ items, isLoading, onEdit, onDelete, onToggle 
   return (
     <div className="h-[300px] sm:h-[400px] md:h-[500px] overflow-y-auto scrollbar-thin pr-2">
       {items.map(todo => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onToggle={onToggle}
-        />
+        <TodoItem key={todo.id} todo={todo} onEdit={onEdit} onDelete={onDelete} onToggle={onToggle} />
       ))}
     </div>
   )

@@ -60,7 +60,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
   }
 
   if (!userEmail) {
-    return <p className="text-center">Please login to view your todos.</p>
+    return <p className="text-center">Please login to view your todo list with Google ง่ายสุด</p>
   }
 
   return (

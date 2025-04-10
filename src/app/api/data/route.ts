@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma'
+import { auth } from '@/auth' // ✅ ดึง session
 
 // [GET] - ดึงข้อมูลทั้งหมด
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const email = searchParams.get('email') // ✅ ดึง email จาก query
+  const session = await auth() // ✅ ตรวจ session
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const email = session.user?.email
 
   try {
     const result = await prisma.dota2.findMany({
-      where: { userEmail: email || undefined }, // ✅ ถ้าไม่มี email จะไม่ filter
+      where: { userEmail: email || undefined }, 
       orderBy: { createdAt: 'desc' },
     })
 
@@ -21,6 +27,14 @@ export async function GET(req: NextRequest) {
 
 // [POST] - สร้างรายการใหม่
 export async function POST(req: NextRequest) {
+  const session = await auth() // ✅ ตรวจ session
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+ 
+
   try {
     const body = await req.json()
     const { title, description, userEmail } = body

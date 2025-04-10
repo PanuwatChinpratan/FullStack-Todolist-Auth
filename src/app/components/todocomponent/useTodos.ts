@@ -1,4 +1,3 @@
-// components/todo/useTodos.ts
 import { useQuery } from '@tanstack/react-query'
 
 export const useTodos = (userEmail: string | null) => {

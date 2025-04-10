@@ -1,4 +1,3 @@
-// components/todo/TodoItem.tsx
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -22,11 +21,17 @@ export default function TodoItem({ todo, onEdit, onDelete, onToggle }: Props) {
           <p className="text-sm break-all">{todo.description}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          <Button onClick={() => onToggle(todo.id, todo.completed)}>{todo.completed ? 'Undo' : 'Done'}</Button>
-          <Button variant="destructive" onClick={() => onDelete(todo.id)}>
+          <Button className={`cursor-pointer shadow-md ${todo.completed ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-green-500 text-white hover:bg-green-600'}`} onClick={() => onToggle(todo.id, todo.completed)}>
+            {todo.completed ? 'Undo' : 'Done'}
+          </Button>
+
+          <Button className="cursor-pointer shadow-md bg-red-500 text-white hover:bg-red-800" onClick={() => onDelete(todo.id)}>
             Delete
           </Button>
-          <Button onClick={() => onEdit(todo.id, todo.title, todo.description ?? '')}>Edit</Button>
+
+          <Button className="cursor-pointer shadow-md bg-blue-500 text-white hover:bg-blue-600" onClick={() => onEdit(todo.id, todo.title, todo.description ?? '')}>
+            Edit
+          </Button>
         </div>
       </CardContent>
     </Card>

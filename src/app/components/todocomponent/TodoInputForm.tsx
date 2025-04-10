@@ -1,4 +1,3 @@
-// components/todo/TodoInputForm.tsx
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { z } from 'zod'
@@ -23,16 +22,7 @@ type Props = {
   refetch: () => void
 }
 
-export default function TodoInputForm({
-  userEmail,
-  inputValue,
-  inputValueDes,
-  editingId,
-  setInputValue,
-  setInputValueDes,
-  setEditingId,
-  refetch,
-}: Props) {
+export default function TodoInputForm({ userEmail, inputValue, inputValueDes, editingId, setInputValue, setInputValueDes, setEditingId, refetch }: Props) {
   const submit = async () => {
     const parsed = todoSchema.safeParse({ title: inputValue, description: inputValueDes })
     if (!parsed.success) {
@@ -68,7 +58,9 @@ export default function TodoInputForm({
     <div className="flex gap-2 mb-4">
       <Input value={inputValue} placeholder="Title" onChange={e => setInputValue(e.target.value)} />
       <Input value={inputValueDes} placeholder="Description" onChange={e => setInputValueDes(e.target.value)} />
-      <Button onClick={submit}>{editingId === null ? 'Add' : 'Update'}</Button>
+      <Button className="cursor-pointer" onClick={submit}>
+        {editingId === null ? 'Add' : 'Update'}
+      </Button>
     </div>
   )
 }
