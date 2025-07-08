@@ -1,15 +1,15 @@
-version: "3.9"
+version: "3.9"  # ใช้ compose schema เวอร์ชันล่าสุด
 
 services:
-  web:
+  web:  # ชื่อ container (service name)
     container_name: todolist-dev
     build:
-      context: .
-      dockerfile: Dockerfile.dev
+      context: .             # โฟลเดอร์ที่ใช้ build (ปกติคือ root project)
+      dockerfile: Dockerfile.dev  # ใช้ Dockerfile.dev สร้าง image
     ports:
-      - "3000:3000"
+      - "3000:3000"          # map port จากเครื่อง → container
     volumes:
-      - .:/app           # sync โค้ดในเครื่องเข้า container
-      - /app/node_modules  # ให้ container ใช้ node_modules ของตัวเอง
+      - .:/app               # sync โค้ดจากเครื่องเข้า container (hot reload)
+      - /app/node_modules    # ป้องกันไม่ให้ node_modules ทับจากเครื่อง
     env_file:
-      - .env.local       # เอา .env ใช้งานใน dev ได้
+      - .env.local           # โหลด ENV variable ใช้งานตอน dev (เช่น DATABASE_URL)
