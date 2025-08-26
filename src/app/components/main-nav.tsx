@@ -26,8 +26,8 @@ export function MainNav() {
                 <ListItem href="/stats" title="สถิติความสำเร็จ">
                   ดูจำนวนงานที่ทำเสร็จแล้วของคุณ
                 </ListItem>
-                <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
+                <ListItem href="/blog" title="บล็อก">
+                  อ่านโพสต์บทความต่างๆ
                 </ListItem>
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
                   ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
