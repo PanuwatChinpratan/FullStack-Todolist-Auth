@@ -23,8 +23,8 @@ export function MainNav() {
             <NavigationMenuTrigger className="px-2 cursor-pointer">MENU 1</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
+                <ListItem href="/stats" title="สถิติความสำเร็จ">
+                  ดูจำนวนงานที่ทำเสร็จแล้วของคุณ
                 </ListItem>
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
                   ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
