@@ -3,10 +3,11 @@ import { prisma } from '@/prisma'
 import EditPostForm from '../../EditPostForm'
 
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function EditPage({ params }: Props) {
+  const { id } = await params
   const session = await auth()
 
   if (!session) {
@@ -17,7 +18,7 @@ export default async function EditPage({ params }: Props) {
     )
   }
 
-  const post = await prisma.post.findUnique({ where: { id: params.id } })
+  const post = await prisma.post.findUnique({ where: { id } })
 
   if (!post) {
     return (
