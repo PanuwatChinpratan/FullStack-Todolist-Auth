@@ -24,7 +24,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Copy,
   RefreshCw,
   Star,
   Clock,
@@ -43,7 +42,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
@@ -177,7 +175,7 @@ export default function ClientPostsPage({
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       setOpen(false);
     },
-    onError: (e: any) => {
+    onError: (e) => {
       toast.error(typeof e?.message === "string" ? e.message : "Create failed");
     },
   });
@@ -214,7 +212,7 @@ export default function ClientPostsPage({
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       setOpen(false);
     },
-    onError: (e: any) => {
+    onError: (e) => {
       toast.error(typeof e?.message === "string" ? e.message : "Update failed");
     },
   });
@@ -235,12 +233,12 @@ export default function ClientPostsPage({
       toast.success("Post deleted");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
-    onError: (e: any) => {
+    onError: (e) => {
       toast.error(typeof e?.message === "string" ? e.message : "Delete failed");
     },
   });
 
-  const items = postsQuery.data ?? [];
+  const items = useMemo(() => postsQuery.data ?? [], [postsQuery.data]);
 
   const tags = useMemo(() => {
     const set = new Set<string>();
@@ -276,14 +274,7 @@ export default function ClientPostsPage({
     );
   const clearAll = () => setSelected([]);
 
-  const copyContent = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard");
-    } catch {
-      toast.error("Copy failed");
-    }
-  };
+
 
   // --- Dialog helpers ---
   function openCreateDialog() {

@@ -5,7 +5,6 @@ import { z } from "zod";
 
 const ALLOWED_EMAIL = process.env.ALLOWED_EMAIL!.toLowerCase();
 
-
 // รับได้ทั้ง description และ des แล้ว normalize → des เท่านั้น
 const BaseFields = z.object({
   title: z.string().min(1),
@@ -20,15 +19,13 @@ const BaseFields = z.object({
 
 const PostInput = BaseFields.transform(({ description, des, ...rest }) => ({
   ...rest,
-  des: des ?? description ?? undefined, 
+  des: des ?? description ?? undefined,
 }));
 
 export async function GET() {
-  const posts = await prisma.post.findMany({
-    orderBy: { updatedAt: "desc" },
-  });
+  const posts = await prisma.post.findMany({ orderBy: { updatedAt: "desc" } });
 
-  const shaped = posts.map((p: any) => ({
+  const shaped = posts.map((p) => ({
     ...p,
     description: p.des ?? null,
   }));
@@ -46,16 +43,19 @@ export async function POST(req: Request) {
   const json = await req.json();
   const parsed = PostInput.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: parsed.error.flatten() },
+      { status: 400 }
+    );
   }
 
-  const data = parsed.data; 
+  const data = parsed.data;
 
   const post = await prisma.post.create({
     data: {
       title: data.title,
       content: data.content,
-      des: data.des,           
+      des: data.des,
       tags: data.tags ?? [],
       lang: data.lang,
       url: data.url,
@@ -64,6 +64,8 @@ export async function POST(req: Request) {
     },
   });
 
-
-  return NextResponse.json({ ...post, description: post.des ?? null }, { status: 201 });
+  return NextResponse.json(
+    { ...post, description: post.des ?? null },
+    { status: 201 }
+  );
 }
