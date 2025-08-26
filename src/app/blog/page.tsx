@@ -1,58 +1,33 @@
-import { auth } from "@/auth";
-import { prisma } from "@/prisma";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default async function Page() {
-  const session = await auth();
-  const email = session?.user?.email;
-
-  if (!email) {
-    return (
-      <main className="max-w-lg mx-auto p-6">
-        <h1 className="text-3xl mb-4 text-center">สถิติความสำเร็จ</h1>
-        <p className="text-center">Please login to view your stats</p>
-      </main>
-    );
+const posts = [
+  {
+    title: 'โพสต์แรก',
+    content: 'ยินดีต้อนรับสู่บล็อกของเรา! นี่คือโพสต์แรกทดลองระบบ'
+  },
+  {
+    title: 'โพสต์ถัดไป',
+    content: 'ในอนาคตจะมีเนื้อหาสาระมาอัปเดตที่นี่เรื่อย ๆ'
   }
+]
 
-  const todos = await prisma.dota2.findMany({
-    where: { userEmail: email },
-  });
-
-  const total = todos.length;
-  const completed = todos.filter((t) => t.completed).length;
-
-  const pending = total - completed;
-
+export default function BlogPage() {
   return (
-    <main className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl mb-6 text-center">สถิติความสำเร็จ</h1>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>ทั้งหมด</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center text-2xl font-bold">
-            {total}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>ทำเสร็จแล้ว</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center text-2xl font-bold text-green-600">
-            {completed}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>ค้างอยู่</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center text-2xl font-bold text-red-600">
-            {pending}
-          </CardContent>
-        </Card>
+    <main className="max-w-2xl mx-auto p-6 space-y-6">
+      <h1 className="text-3xl text-center">บล็อก</h1>
+      <div className="space-y-4">
+        {posts.map((post, idx) => (
+          <Card key={idx}>
+            <CardHeader>
+              <CardTitle>{post.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{post.content}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </main>
-  );
+  )
 }
+
