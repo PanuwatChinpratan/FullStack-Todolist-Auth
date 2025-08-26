@@ -1,5 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+export const metadata = {
+  title: 'บล็อก',
+}
+
 const posts = [
   {
     title: 'โพสต์แรก',
@@ -13,8 +17,8 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <main className="max-w-2xl mx-auto p-6 space-y-6">
-      <h1 className="text-3xl text-center">บล็อก</h1>
+    <section className="mx-auto max-w-2xl space-y-6 p-6">
+      <h1 className="text-center text-3xl">บล็อก</h1>
       <div className="space-y-4">
         {posts.map((post, idx) => (
           <Card key={idx}>
@@ -27,7 +31,7 @@ export default function BlogPage() {
           </Card>
         ))}
       </div>
-    </main>
+    </section>
   )
 }
 

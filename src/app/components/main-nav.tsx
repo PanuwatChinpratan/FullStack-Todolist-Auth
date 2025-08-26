@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 
@@ -46,16 +47,24 @@ export function MainNav() {
   )
 }
 
-const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a ref={ref} className={cn('hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors', className)} {...props}>
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
-        </a>
+const ListItem = React.forwardRef<
+  React.ElementRef<typeof NavigationMenuLink>,
+  React.ComponentPropsWithoutRef<typeof NavigationMenuLink> & { title: string }
+>(({ className, title, children, href, ...props }, ref) => (
+  <li>
+    <Link href={href} passHref legacyBehavior>
+      <NavigationMenuLink
+        ref={ref}
+        className={cn(
+          'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors',
+          className
+        )}
+        {...props}
+      >
+        <div className="text-sm font-medium leading-none">{title}</div>
+        <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
       </NavigationMenuLink>
-    </li>
-  )
-})
+    </Link>
+  </li>
+))
 ListItem.displayName = 'ListItem'
