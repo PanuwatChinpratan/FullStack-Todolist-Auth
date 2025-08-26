@@ -20,11 +20,11 @@ export function MainNav() {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="px-2 cursor-pointer">MENU 1</NavigationMenuTrigger>
+            <NavigationMenuTrigger className="px-2 cursor-pointer">MENU</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
-                  ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
+                <ListItem href="/menuone" title="Blog Blog Friendly Links">
+                  Blog Blog Friendly Links
                 </ListItem>
                 <ListItem href="/" title="Haven’t figured it out yet, but I’ll update when I do!">
                   ไว้ทำจะมาอัพเดทครับ ตอนนี้ยังคิดไม่ออก
