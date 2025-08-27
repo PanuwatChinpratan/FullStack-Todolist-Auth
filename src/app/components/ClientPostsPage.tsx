@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
@@ -24,7 +23,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  RefreshCw,
   Star,
   Clock,
   Filter,
@@ -45,38 +43,11 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-type PostItem = {
-  id: string;
-  title: string;
-  content: string;
-  description?: string | null;
-  tags: string[];
-  lang?: string | null;
-  url?: string | null;
-  stars?: number | null;
-  authorEmail: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { usePosts, PostItem } from "@/hook/usePosts";
 
-function formatTimeAgo(iso: string) {
-  const ms = Date.now() - new Date(iso).getTime();
-  const s = Math.floor(ms / 1000);
-  if (s < 60) return `${s}s ago`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  return `${d}d ago`;
-}
+import { formatTimeAgo, parseTagsInput } from "@/lib/posts-utils";
 
-function parseTagsInput(v: string): string[] {
-  return v
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
+import LoadingSkeletonCard from "./LoadingSkeletonCard";
 
 export default function ClientPostsPage({
   userEmail,
@@ -119,125 +90,20 @@ export default function ClientPostsPage({
       if (!isTyping && !open) {
         e.preventDefault();
         e.stopPropagation();
-
-        setTimeout(() => {
-          const input = searchRef.current;
-          if (input) {
-            input.focus({ preventScroll: true });
-          }
-        }, 0);
+        setTimeout(() => searchRef.current?.focus({ preventScroll: true }), 0);
       }
     };
-
     window.addEventListener("keydown", onKey, { capture: true });
     return () => window.removeEventListener("keydown", onKey, true);
   }, [open]);
 
   useEffect(() => setMounted(true), []);
 
-  const queryClient = useQueryClient();
+  // ✅ ใช้ hook ใหม่ (ผูก queryKey กับ state เพื่อรีเฟรชถูกจังหวะเวลามีตัวกรอง)
+  const { postsQuery, createMutation, updateMutation, deleteMutation } =
+    usePosts({ q: query, selected, tab });
 
-  const postsQuery = useQuery<PostItem[]>({
-    queryKey: ["posts", { q: query, selected, tab }],
-    queryFn: async () => {
-      const res = await fetch("/api/posts", { cache: "no-store" });
-      if (!res.ok) throw new Error("Failed to fetch posts");
-      return res.json();
-    },
-  });
-
-  // CREATE
-  const createMutation = useMutation({
-    mutationFn: async (data: {
-      title: string;
-      content: string;
-      description?: string;
-      tags?: string[];
-      lang?: string;
-      url?: string;
-      stars?: number;
-    }) => {
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(
-          err?.error ? JSON.stringify(err.error) : "Create failed"
-        );
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success("Post created");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      setOpen(false);
-    },
-    onError: (e) => {
-      toast.error(typeof e?.message === "string" ? e.message : "Create failed");
-    },
-  });
-
-  // UPDATE
-  const updateMutation = useMutation({
-    mutationFn: async (payload: {
-      id: string;
-      data: {
-        title?: string;
-        content?: string;
-        description?: string;
-        tags?: string[];
-        lang?: string;
-        url?: string;
-        stars?: number;
-      };
-    }) => {
-      const res = await fetch(`/api/posts/${payload.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload.data),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(
-          err?.error ? JSON.stringify(err.error) : "Update failed"
-        );
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success("Post updated");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      setOpen(false);
-    },
-    onError: (e) => {
-      toast.error(typeof e?.message === "string" ? e.message : "Update failed");
-    },
-  });
-
-  // DELETE
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`/api/posts/${id}`, { method: "DELETE" });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(
-          err?.error ? JSON.stringify(err.error) : "Delete failed"
-        );
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success("Post deleted");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-    onError: (e) => {
-      toast.error(typeof e?.message === "string" ? e.message : "Delete failed");
-    },
-  });
-
+  // สรุปข้อมูล
   const items = useMemo(() => postsQuery.data ?? [], [postsQuery.data]);
 
   const tags = useMemo(() => {
@@ -273,8 +139,6 @@ export default function ClientPostsPage({
       prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
     );
   const clearAll = () => setSelected([]);
-
-
 
   // --- Dialog helpers ---
   function openCreateDialog() {
@@ -318,9 +182,30 @@ export default function ClientPostsPage({
     }
 
     if (editId) {
-      updateMutation.mutate({ id: editId, data: payload });
+      updateMutation.mutate(
+        { id: editId, data: payload },
+        {
+          onSuccess: () => {
+            toast.success("Post updated");
+            setOpen(false);
+          },
+          onError: (e: unknown) => {
+            const msg = e instanceof Error ? e.message : "Update failed";
+            toast.error(msg);
+          },
+        }
+      );
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Post created");
+          setOpen(false);
+        },
+        onError: (e: unknown) => {
+          const msg = e instanceof Error ? e.message : "Create failed";
+          toast.error(msg);
+        },
+      });
     }
   }
 
@@ -341,9 +226,10 @@ export default function ClientPostsPage({
               )}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 z-[-1]">
             <Button variant="secondary" disabled className="gap-2">
-              <RefreshCw className="h-4 w-4" /> Live (SSE) — off
+              {/* เดิมเป็น Live(SSE) off ไว้เหมือนเดิม */}
+              Live (SSE) — off
             </Button>
             {canPost && (
               <Button
@@ -357,6 +243,7 @@ export default function ClientPostsPage({
           </div>
         </div>
 
+        {/* ค้นหา + แท็กฟิลเตอร์ */}
         <Card className="mb-6">
           <CardContent className="pt-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
@@ -418,140 +305,166 @@ export default function ClientPostsPage({
           </TabsList>
         </Tabs>
 
-        <div className="grid grid-cols-1 gap-4">
-          {filtered
-            .filter((i) =>
-              tab === "all"
-                ? true
-                : tab === "ts"
-                ? ["ts", "tsx"].includes((i.lang || "").toLowerCase())
-                : tab === "server"
-                ? i.tags.includes("server")
-                : tab === "next"
-                ? i.tags.includes("next.js")
-                : true
-            )
-            .map((item, idx) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.03 }}
-              >
-                <Card className="h-full overflow-hidden">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <CardTitle className="text-base leading-tight">
-                          {item.title}
-                        </CardTitle>
-                        <CardDescription className="mt-1 flex items-center gap-3">
-                          <span className="inline-flex items-center gap-1 text-xs">
-                            <Clock className="h-3 w-3" />{" "}
-                            {mounted ? formatTimeAgo(item.updatedAt) : "\u200b"}
-                          </span>
-                          {typeof item.stars === "number" && (
-                            <span className="inline-flex items-center gap-1 text-xs">
-                              <Star className="h-3 w-3" /> {item.stars}
-                            </span>
+        {/* ✅ บล็อก Loading ตรง content ที่แสดงโพสต์ */}
+        {postsQuery.isLoading ? (
+          <>
+            <p className="mb-3 text-center text-sm text-muted-foreground">
+              กำลังโหลดข้อมูล...
+            </p>
+            <LoadingSkeletonCard />
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 gap-4">
+              {filtered
+                .filter((i) =>
+                  tab === "all"
+                    ? true
+                    : tab === "ts"
+                    ? ["ts", "tsx"].includes((i.lang || "").toLowerCase())
+                    : tab === "server"
+                    ? i.tags.includes("server")
+                    : tab === "next"
+                    ? i.tags.includes("next.js")
+                    : true
+                )
+                .map((item, idx) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.03 }}
+                  >
+                    <Card className="h-full overflow-hidden">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <CardTitle className="text-base leading-tight">
+                              {item.title}
+                            </CardTitle>
+                            <CardDescription className="mt-1 flex items-center gap-3">
+                              <span className="inline-flex items-center gap-1 text-xs">
+                                <Clock className="h-3 w-3" />{" "}
+                                {mounted
+                                  ? formatTimeAgo(item.updatedAt)
+                                  : "\u200b"}
+                              </span>
+                              {typeof item.stars === "number" && (
+                                <span className="inline-flex items-center gap-1 text-xs">
+                                  <Star className="h-3 w-3" /> {item.stars}
+                                </span>
+                              )}
+                              {item.url && (
+                                <a
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs underline decoration-dotted"
+                                >
+                                  <LinkIcon className="h-3 w-3" /> reference
+                                </a>
+                              )}
+                            </CardDescription>
+                          </div>
+                          {canPost && (
+                            <div className="flex items-center gap-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => openEditDialog(item)}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Edit</TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() =>
+                                      deleteMutation.mutate(item.id, {
+                                        onSuccess: () =>
+                                          toast.success("Post deleted"),
+                                        onError: (e: unknown) =>
+                                          toast.error(
+                                            e instanceof Error
+                                              ? e.message
+                                              : "Delete failed"
+                                          ),
+                                      })
+                                    }
+                                    disabled={deleteMutation.isPending}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Delete</TooltipContent>
+                              </Tooltip>
+                            </div>
                           )}
-                          {item.url && (
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-xs underline decoration-dotted"
-                            >
-                              <LinkIcon className="h-3 w-3" /> reference
-                            </a>
-                          )}
-                        </CardDescription>
-                      </div>
-                      {canPost && (
-                        <div className="flex items-center gap-1">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => openEditDialog(item)}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Edit</TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => deleteMutation.mutate(item.id)}
-                                disabled={deleteMutation.isPending}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Delete</TooltipContent>
-                          </Tooltip>
                         </div>
-                      )}
-                    </div>
-                    {item.description && (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {item.description}
-                      </p>
-                    )}
-                  </CardHeader>
+                        {item.description && (
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
+                        )}
+                      </CardHeader>
 
-                  <Separator />
+                      <Separator />
 
-                  <CardContent className="p-0">
-                    <pre className="max-h-56 overflow-auto bg-muted/60 p-4 text-xs leading-relaxed">
-                      {item.content}
-                    </pre>
-                    <div className="flex items-center justify-between gap-2 p-3">
-                      <div className="flex flex-wrap gap-1">
-                        {item.tags.map((t) => (
-                          <Badge
-                            key={t}
-                            variant="secondary"
-                            className="text-[10px]"
-                          >
-                            {t}
-                          </Badge>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        {(() => {
-                          const lang = (item.lang || "").toLowerCase();
-                          return lang === "ts" || lang === "tsx" ? (
-                            <>
-                              <Laptop className="h-3.5 w-3.5" /> TS/TSX
-                            </>
-                          ) : lang ? (
-                            <>
-                              <TerminalSquare className="h-3.5 w-3.5" />{" "}
-                              {lang.toUpperCase()}
-                            </>
-                          ) : (
-                            <>
-                              <TerminalSquare className="h-3.5 w-3.5" /> POST
-                            </>
-                          );
-                        })()}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-        </div>
+                      <CardContent className="p-0">
+                        <pre className="max-h-56 overflow-auto bg-muted/60 p-4 text-xs leading-relaxed">
+                          {item.content}
+                        </pre>
+                        <div className="flex items-center justify-between gap-2 p-3">
+                          <div className="flex flex-wrap gap-1">
+                            {item.tags.map((t) => (
+                              <Badge
+                                key={t}
+                                variant="secondary"
+                                className="text-[10px]"
+                              >
+                                {t}
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            {(() => {
+                              const lang = (item.lang || "").toLowerCase();
+                              return lang === "ts" || lang === "tsx" ? (
+                                <>
+                                  <Laptop className="h-3.5 w-3.5" /> TS/TSX
+                                </>
+                              ) : lang ? (
+                                <>
+                                  <TerminalSquare className="h-3.5 w-3.5" />{" "}
+                                  {lang.toUpperCase()}
+                                </>
+                              ) : (
+                                <>
+                                  <TerminalSquare className="h-3.5 w-3.5" />{" "}
+                                  POST
+                                </>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+            </div>
 
-        {filtered.length === 0 && (
-          <div className="mt-10 text-center text-sm text-muted-foreground">
-            No results. Try different keywords or clear filters.
-          </div>
+            {filtered.length === 0 && (
+              <div className="mt-10 text-center text-sm text-muted-foreground">
+                No results. Try different keywords or clear filters.
+              </div>
+            )}
+          </>
         )}
 
         <footer className="mt-10 flex flex-col items-center justify-between gap-3 border-t pt-6 text-sm text-muted-foreground md:flex-row">
@@ -593,7 +506,6 @@ export default function ClientPostsPage({
               />
             </div>
 
-            {/* ถ้า schema ไม่มี description ให้ลบ block นี้ */}
             <div className="grid gap-1.5">
               <Label htmlFor="desc">Description</Label>
               <Input
