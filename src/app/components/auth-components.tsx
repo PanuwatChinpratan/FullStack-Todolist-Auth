@@ -24,7 +24,7 @@ export function SignInGoogleButton({ ...props }: React.ComponentPropsWithRef<typ
       }}
     >
       <Button {...props}>
-        <FaGoogle className="mr-2" /> {/* Ícone do Google */}
+        <FaGoogle className="mr-2" /> 
         Sign in with Google
       </Button>
     </form>

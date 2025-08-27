@@ -1,14 +1,26 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const session = request.cookies.get('__Secure-authjs.session-token') || request.cookies.get('authjs.session-token')
-  if (session?.value) {
-    return NextResponse.next()
-  }
-  return NextResponse.redirect(new URL('/', request.url))
+export function middleware(req: NextRequest) {
+  const session =
+    req.cookies.get("__Secure-authjs.session-token") ??
+    req.cookies.get("authjs.session-token");
+
+  if (session?.value) return NextResponse.next();
+
+  const url = req.nextUrl.clone();
+  url.pathname = "/";
+
+  const res = NextResponse.redirect(url); // 307 by default
+  // 👇 flash cookie (NOT HttpOnly so client can read; short-lived; single-shot UX)
+  res.cookies.set("flash", "login-required", {
+    path: "/",
+    maxAge: 60,
+    sameSite: "lax",
+    secure: true,
+    httpOnly: false,
+  });
+  return res;
 }
 
-export const config = {
-  matcher: '/todolist/:path*',
-}
+export const config = { matcher: ["/todolist/:path*"] };

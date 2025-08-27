@@ -9,7 +9,6 @@ export default function Index() {
       <div>
         <p>จัดทำขึ้นเพื่อศึกษาหาความรู้และหางานครับ</p>
       </div>
-      <div>! เตือนตัวเอง Optional ถ้าอยากทำ WebAuthn ให้เปิด model ที่ comment ไว้ใน schema.prisma แต่ต้องไปศึกษาก่อนนะครับ</div>
       <div className="flex flex-col rounded-md bg-gray-100 dark:bg-gray-800">
         <div className="rounded-t-md bg-gray-200 dark:bg-gray-700 p-4 font-bold text-gray-900 dark:text-gray-100">Session ของคุณ</div>
 
