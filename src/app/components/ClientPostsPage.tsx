@@ -226,9 +226,9 @@ export default function ClientPostsPage({
               )}
             </p>
           </div>
-          <div className="flex items-center gap-2 z-[-1]">
-            <Button variant="secondary" disabled className="gap-2">
-              {/* เดิมเป็น Live(SSE) off ไว้เหมือนเดิม */}
+          <div className="flex items-center gap-2">
+            <Button variant="secondary"  className="gap-2">
+           
               Live (SSE) — off
             </Button>
             {canPost && (
