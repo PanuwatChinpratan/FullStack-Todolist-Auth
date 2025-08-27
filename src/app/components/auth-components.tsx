@@ -1,7 +1,6 @@
 import { signIn, signOut } from '@/auth'
 import { Button } from '@/components/ui/button'
-import { FaGoogle } from 'react-icons/fa'
-
+import { FaGoogle, FaGithub } from 'react-icons/fa'
 export function SignIn({ provider, ...props }: { provider?: string } & React.ComponentPropsWithRef<typeof Button>) {
   return (
     <form
@@ -14,7 +13,6 @@ export function SignIn({ provider, ...props }: { provider?: string } & React.Com
     </form>
   )
 }
-
 export function SignInGoogleButton({ ...props }: React.ComponentPropsWithRef<typeof Button>) {
   return (
     <form
@@ -26,6 +24,22 @@ export function SignInGoogleButton({ ...props }: React.ComponentPropsWithRef<typ
       <Button {...props}>
         <FaGoogle className="mr-2" /> 
         Sign in with Google
+      </Button>
+    </form>
+  )
+}
+
+export function SignInGitHubButton({ ...props }: React.ComponentPropsWithRef<typeof Button>) {
+  return (
+    <form
+      action={async () => {
+        'use server'
+        await signIn('github',{ redirectTo: "/" })
+      }}
+    >
+      <Button {...props}>
+        <FaGithub className="mr-2" />
+        Sign in with GitHub
       </Button>
     </form>
   )

@@ -14,7 +14,7 @@ export function MainNav() {
     <div className="flex items-center gap-4">
       <CustomLink href="/">
         <Button variant="ghost" className="p-0 cursor-pointer">
-          <Image src="globe.svg" alt="Home" width="32" height="32" priority className="min-w-8" />
+          <Image src="/globe.svg" alt="Home" width="32" height="32" priority className="min-w-8" />
         </Button>
       </CustomLink>
       <NavigationMenu>
