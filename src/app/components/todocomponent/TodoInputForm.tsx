@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { z } from 'zod'
 import { toast } from 'sonner'
-
+import { useTodoStore } from './useTodoStore'
 const todoSchema = z.object({
   title: z
     .string()
@@ -13,16 +13,12 @@ const todoSchema = z.object({
 
 type Props = {
   userEmail: string
-  inputValue: string
-  inputValueDes: string
-  editingId: number | null
-  setInputValue: (v: string) => void
-  setInputValueDes: (v: string) => void
-  setEditingId: (id: number | null) => void
+
   refetch: () => void
 }
 
-export default function TodoInputForm({ userEmail, inputValue, inputValueDes, editingId, setInputValue, setInputValueDes, setEditingId, refetch }: Props) {
+export default function TodoInputForm({ userEmail, refetch }: Props) {
+  const { inputValue, inputValueDes, editingId, setInputValue, setInputValueDes, setEditingId } = useTodoStore()
   const submit = async () => {
     const parsed = todoSchema.safeParse({ title: inputValue, description: inputValueDes })
     if (!parsed.success) {
