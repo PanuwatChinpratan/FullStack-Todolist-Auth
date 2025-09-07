@@ -3,14 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {
   todo: {
-    id: number;
+    id: string;
     title: string;
-    description?: string;
+    description?: string | null;
     completed: boolean;
   };
-  onEdit: (id: number, title: string, desc: string) => void;
-  onDelete: (id: number) => void;
-  onToggle: (id: number, completed: boolean) => void;
+  onEdit: (id: string, title: string, desc: string) => void;
+  onDelete: (id: string) => void;
+  onToggle: (id: string, completed: boolean) => void;
 };
 export default function TodoItem({ todo, onEdit, onDelete, onToggle }: Props) {
   return (

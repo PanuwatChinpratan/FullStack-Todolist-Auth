@@ -3,15 +3,15 @@ import LoadingSkeleton from '../LoadingSkeleton'
 
 type Props = {
   items: {
-    id: number
+    id: string
     title: string
-    description?: string
+    description?: string | null
     completed: boolean
   }[]
   isLoading: boolean
-  onEdit: (id: number, title: string, desc: string) => void
-  onDelete: (id: number) => void
-  onToggle: (id: number, completed: boolean) => void
+  onEdit: (id: string, title: string, desc: string) => void
+  onDelete: (id: string) => void
+  onToggle: (id: string, completed: boolean) => void
 }
 
 export default function TodoList({ items, isLoading, onEdit, onDelete, onToggle }: Props) {
