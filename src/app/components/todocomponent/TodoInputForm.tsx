@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { useTodoStore } from './useTodoStore'
+import { addTodo, updateTodo } from '@/app/todolist/action'
 const todoSchema = z.object({
   title: z
     .string()
@@ -26,26 +27,28 @@ export default function TodoInputForm({ userEmail, refetch }: Props) {
       return
     }
 
-    const url = editingId === null ? '/api/data' : `/api/data/${editingId}`
-    const method = editingId === null ? 'POST' : 'PUT'
-
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: inputValue,
-        description: inputValueDes,
-        ...(editingId === null ? { userEmail } : {}),
-      }),
-    })
-
-    if (res.ok) {
-      toast(editingId === null ? 'เพิ่ม todo เรียบร้อยแล้ว ✅' : 'อัปเดต todo สำเร็จ ✏️')
+      try {
+      if (editingId === null) {
+        await addTodo({
+          title: inputValue,
+          description: inputValueDes,
+          userEmail,
+        })
+        toast('เพิ่ม todo เรียบร้อยแล้ว ✅')
+      } else {
+        await updateTodo({
+          id: editingId,
+          title: inputValue,
+          description: inputValueDes,
+        })
+        toast('อัปเดต todo สำเร็จ ✏️')
+      }
       setInputValue('')
       setInputValueDes('')
       setEditingId(null)
       refetch()
-    } else {
+   
+    } catch {
       toast('เกิดข้อผิดพลาด ❌')
     }
   }

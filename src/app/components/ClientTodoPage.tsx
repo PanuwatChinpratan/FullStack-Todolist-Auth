@@ -7,23 +7,20 @@ import DeleteConfirmDialog from "./todocomponent/DeleteConfirmDialog";
 import { useTodos } from "./todocomponent/useTodos";
 import { toast } from "sonner";
 import { useTodoStore } from "./todocomponent/useTodoStore";
+import { deleteTodo, toggleTodo } from "../todolist/action";
 type Props = {
   userEmail: string | null;
 };
 
 export default function ClientTodoPage({ userEmail }: Props) {
   const { setInputValue, setInputValueDes, setEditingId } = useTodoStore();
-  const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { data: items = [], isLoading, refetch } = useTodos(userEmail);
 
-  const toggleComplete = async (id: number, completed: boolean) => {
-    await fetch(`/api/data/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: !completed }),
-    });
+  const toggleComplete = async (id: string, completed: boolean) => {
+    await toggleTodo(id, !completed);
     refetch();
   };
 
@@ -31,25 +28,19 @@ export default function ClientTodoPage({ userEmail }: Props) {
     if (selectedDeleteId === null) return;
     setDeletingId(selectedDeleteId);
     try {
-      const res = await fetch(`/api/data/${selectedDeleteId}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        toast("ลบ todo แล้ว 🗑️");
-        refetch();
-      } else {
-        toast("ลบไม่สำเร็จ ❌");
-      }
+      await deleteTodo(selectedDeleteId);
+      toast("ลบ todo แล้ว 🗑️");
+      refetch();
     } catch (error) {
       console.log(error);
-      toast("เกิดข้อผิดพลาดในการลบ ❌");
+      toast("ลบไม่สำเร็จ ❌");
     } finally {
       setDeletingId(null);
       setSelectedDeleteId(null);
     }
   };
 
-  const handleEdit = (id: number, title: string, desc: string) => {
+  const handleEdit = (id: string, title: string, desc: string) => {
     setEditingId(id);
     setInputValue(title);
     setInputValueDes(desc);
@@ -72,7 +63,7 @@ export default function ClientTodoPage({ userEmail }: Props) {
         items={items}
         isLoading={isLoading}
         onEdit={handleEdit}
-        onDelete={setSelectedDeleteId}
+        onDelete={(id) => setSelectedDeleteId(id)}
         onToggle={toggleComplete}
       />
 
